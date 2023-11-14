@@ -5,10 +5,12 @@ import logoImage from "../../assets/images/buttons.png";
 import redCircleImage from "../../assets/images/red.png";
 import LeftText from "../../assets/images/LeftText.png";
 import shoppingCart from "../../assets/images/shoppingCart.png";
+import popupimg from "../../assets/images/popupimg.png";
 
 const BackgroundView = ({ children }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
 
   const checkFullScreen = () => {
     setIsFullScreen(!!document.fullscreenElement);
@@ -26,7 +28,8 @@ const BackgroundView = ({ children }) => {
   const simulateLoading = () => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 9000);
+      setShowPopup(true);
+    }, 6000);
   };
 
   const animateImagesOnLoad = () => {
@@ -79,6 +82,29 @@ const BackgroundView = ({ children }) => {
           />
         </div>
       </div>
+
+
+      {/* Popup */}
+      {showPopup && (
+<div className="absolute inset-0 z-50 flex items-center justify-center">
+  <div className="flex flex-col items-center  justify-center bg-[#121415] border border-solid border-white w-[30%] h-[27%] rounded shadow-md relative">
+<div className="flex items-center justify-center w-[80%]">
+  <div className="flex items-end justify-end w-full">
+    <img src={popupimg} alt="Logo" className="w-[18%] h-[56%]" />
+    <div className="flex flex-col items-center  justify-center flex-grow ml-8">
+      <h2 className="text-2xl text-white font-bold mb-4">Synchronization</h2>
+      <p className="text-[#777777] text-lg font-bold">update required</p>
+    </div>
+  </div>
+</div>
+
+
+<div className="absolute bottom-0 text-[#B2ABF2] flex items-center justify-center left-0 w-full bg-black h-[18%] font-bold"> <button>update</button> </div>
+  </div>
+</div>
+
+      )}
+
 
       {isLoading && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
