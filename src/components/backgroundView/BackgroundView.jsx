@@ -6,11 +6,13 @@ import redCircleImage from "../../assets/images/red.png";
 import LeftText from "../../assets/images/LeftText.png";
 import shoppingCart from "../../assets/images/shoppingCart.png";
 import popupimg from "../../assets/images/popupimg.png";
+import CustomStepper from "../customStepper/CustomStepper";
 
 const BackgroundView = ({ children }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
+  const [showStepper, setShowStepper] = useState(false);
 
   const checkFullScreen = () => {
     setIsFullScreen(!!document.fullscreenElement);
@@ -51,11 +53,24 @@ const BackgroundView = ({ children }) => {
     }, 500);
   };
 
+  useEffect(() => {
+    if (showPopup) {
+      const popupElement = document.querySelector('.popup-element');
+
+      if (popupElement) {
+        popupElement.style.transform = "scale(1)";
+      }
+    }
+  }, [showPopup]);
+
+  const handleUpdateClick = () => {
+    setShowStepper(true); // Show the stepper when update is clicked
+  };
+
   return (
     <div className="relative w-screen h-[99%] overflow-hidden bg-black">
       <div className="p-4 bg-[#111413] w-screen text-white flex justify-between items-center">
         <span className="text-lg px-3 py-1"></span>
-
         <div className="flex w-[40%] justify-end items-center">
           <img src={redCircleImage} alt="Logo" className="w-6 h-6 mt-1" />
           <span className="text-[#B90606] px-1">Synchronization error</span>
@@ -66,7 +81,6 @@ const BackgroundView = ({ children }) => {
 
       <div className="p-0 w-screen h-[13%] bg-[#1C1D1F] text-white flex justify-between items-center">
         <span className="text-lg"></span>
-
         <div className="flex w-full justify-between items-center w-screen">
           <img
             id="leftText"
@@ -83,39 +97,46 @@ const BackgroundView = ({ children }) => {
         </div>
       </div>
 
-
-      {/* Popup */}
-      {showPopup && (
-<div className="absolute inset-0 z-50 flex items-center justify-center">
-  <div className="flex flex-col items-center  justify-center bg-[#121415] border border-solid border-white w-[30%] h-[27%] rounded shadow-md relative">
-<div className="flex items-center justify-center w-[80%]">
-  <div className="flex items-end justify-end w-full">
-    <img src={popupimg} alt="Logo" className="w-[18%] h-[56%]" />
-    <div className="flex flex-col items-center  justify-center flex-grow ml-8">
-      <h2 className="text-2xl text-white font-bold mb-4">Synchronization</h2>
-      <p className="text-[#777777] text-lg font-bold">update required</p>
-    </div>
-  </div>
-</div>
-
-
-<div className="absolute bottom-0 text-[#B2ABF2] flex items-center justify-center left-0 w-full bg-black h-[18%] font-bold"> <button>update</button> </div>
-  </div>
-</div>
-
+      {showStepper ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <CustomStepper onCancel={() => setShowStepper(false)} />
+        </div>
+      ) : (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="popup-element flex flex-col items-center justify-center bg-[#121415] border border-solid border-white w-[30%] h-[27%] rounded shadow-md relative transform scale-0 transition-transform duration-1000"
+            style={{
+              animation: "scaleUp 1s forwards",
+              transformOrigin: "center",
+            }}
+          >
+            <div className="flex items-center justify-center w-[80%]">
+              <div className="flex items-end justify-end w-full">
+                <img src={popupimg} alt="Logo" className="w-[18%] h-[56%]" />
+                <div className="flex flex-col items-center  justify-center flex-grow ml-8">
+                  <h2 className="text-2xl text-white font-bold mb-4">Synchronization</h2>
+                  <p className="text-[#777777] text-lg font-bold">update required</p>
+                </div>
+              </div>
+            </div>
+            <div className="absolute bottom-0 text-[#B2ABF2] flex items-center justify-center left-0 w-full bg-black h-[18%] font-bold">
+              <button onClick={handleUpdateClick}>update</button>
+            </div>
+          </div>
+        </div>
       )}
-
 
       {isLoading && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
           <img src={spinner} alt="Spinner" className="w-10 h-10" />
         </div>
       )}
+
       <div className="">
         <img
           src={backgroundImage}
           alt="Background"
-          className={`absolute  w-full h-full ${
+          className={`absolute w-full h-full ${
             isFullScreen ? "object-cover" : "w-90  h-auto"
           }`}
           style={{ objectPosition: "center" }}
